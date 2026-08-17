@@ -7,6 +7,7 @@ once, then copy or symlink whichever folder(s) you need into `~/.claude/skills/`
 | Skill | What it does | License |
 |---|---|---|
 | [`project-ai-config/`](project-ai-config/) | Scaffolds one person's standard per-project AI config: [graphify](https://github.com/Graphify-Labs/graphify) knowledge graph + hook-guard, `CLAUDE.md` blocks, `docs/agents/*.md`, `CONTEXT.md`, `docs/adr/`, `/startup` | MIT (this repo) |
+| [`handoff/`](handoff/) | Writes a session handoff document to `~/.claude/handoff/<project>/` instead of the OS temp directory, so a fresh session can pick the work up | MIT (this repo) |
 | [`task-observer/`](task-observer/) | Meta-skill that watches work sessions and turns corrections/patterns into logged, reviewable skill improvements | [CC BY 4.0](task-observer/LICENSE.txt) (redistributed, unmodified — © Eoghan Henn / rebelytics.com) |
 
 ## Install
@@ -16,8 +17,9 @@ Clone the repo, then copy the skill(s) you want into your skills directory:
 ```bash
 git clone https://github.com/Sheodred/project-ai-config.git /tmp/project-ai-config-src
 
-# pick one or both:
+# pick whichever you want:
 cp -r /tmp/project-ai-config-src/project-ai-config ~/.claude/skills/
+cp -r /tmp/project-ai-config-src/handoff ~/.claude/skills/
 cp -r /tmp/project-ai-config-src/task-observer ~/.claude/skills/
 ```
 
@@ -27,6 +29,7 @@ Windows / PowerShell:
 git clone https://github.com/Sheodred/project-ai-config.git "$env:TEMP\project-ai-config-src"
 
 Copy-Item -Recurse "$env:TEMP\project-ai-config-src\project-ai-config" "$HOME\.claude\skills\"
+Copy-Item -Recurse "$env:TEMP\project-ai-config-src\handoff" "$HOME\.claude\skills\"
 Copy-Item -Recurse "$env:TEMP\project-ai-config-src\task-observer" "$HOME\.claude\skills\"
 ```
 
@@ -71,6 +74,29 @@ already there.
 
 For an existing repo that already has some of this, it retrofits — only what's missing gets
 added; nothing already there gets clobbered.
+
+---
+
+## handoff
+
+`/handoff` writes a session handoff document so a fresh session can continue the
+work without re-deriving it.
+
+It exists because the upstream `mattpocock-skills:handoff` plugin hardcodes the
+**OS temp directory**, which conflicts with the convention the other skills here
+assume: one folder per project under `~/.claude/handoff/<project>/`, flat files
+named `<YYYY-MM-DD>T<HHMM>-<slug>.md`. Patching the plugin's own copy does not
+hold — it lives under a version-pinned cache path, so the next plugin update
+silently restores the temp default. A user-level skill survives that.
+
+`project-ai-config`'s `startup.md` template reads handoffs from the same
+location, so the two are designed to be installed together. The temp fallback in
+`/startup` stays as a net for older handoffs, or for a machine still running an
+unpatched plugin.
+
+The instruction text is an independent rewrite rather than a copy; the idea of a
+handoff skill, and its `argument-hint`/`disable-model-invocation` frontmatter
+shape, follow [mattpocock/skills](https://github.com/mattpocock/skills) (MIT).
 
 ---
 
