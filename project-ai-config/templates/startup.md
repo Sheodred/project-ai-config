@@ -12,6 +12,6 @@ Run this repo's session-start routine now, in order. Don't ask for confirmation 
    - If this session is clearly associated with this repo, take the newest file in `C:\Users\<user>\.claude\handoff\<PROJECT>\`, read it, and print the full content so both of you have it in view before continuing.
    - If there's no clear project association, list the five most recent handoffs across all project folders — timestamp, project, and slug each — and ask which to load. Don't auto-pick one.
    - If the directory is empty or missing, say so briefly and move on — don't treat it as an error.
-   - Also check the OS temp directory (`C:\Users\<user>\AppData\Local\Temp\`) as a fallback: the handoff plugin's own logic hardcodes that location, so a doc landing there means the plugin default overrode the instruction above. Read it if found, and say so.
+   - Also check the OS temp directory (`C:\Users\<user>\AppData\Local\Temp\`) as a fallback. The upstream `mattpocock-skills:handoff` plugin used to hardcode that location; since 2026-08-17 the canonical `~/.claude/skills/handoff/SKILL.md` carries the convention above instead. The plugin's cached copy was patched to match, but that path is version-pinned, so a plugin update silently restores the temp default. A doc landing in temp therefore means either an older handoff or a plugin that has since updated — read it if found, say so, and move it into the project folder.
 
 End with a short status line: what's built, what's configured, whether a handoff was found, and what it says the next task is (if any).
