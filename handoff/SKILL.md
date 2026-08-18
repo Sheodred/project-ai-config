@@ -10,15 +10,23 @@ can continue the work.
 
 ## Where it goes
 
-Save to:
+Save to (`~` = your home directory — expand it for your OS):
 
 ```
-C:\Users\<user>\.claude\handoff\<project>\<YYYY-MM-DD>T<HHMM>-<slug>.md
+~/.claude/handoff/<project>/<YYYY-MM-DD>T<HHMM>-<slug>.md
 ```
 
-- `<project>` is the repo's directory name (`hobbyhub`, `mtg-ai`, …), or
-  `global` for work not tied to one repo. One folder per project, flat files
-  inside — **not** a folder per handoff.
+| OS | `~` expands to | Full example |
+|----|----------------|--------------|
+| Linux | `/home/<user>` | `/home/you/.claude/handoff/mtg-ai/2026-08-11T1830-custom-fields.md` |
+| macOS | `/Users/<user>` | `/Users/you/.claude/handoff/mtg-ai/2026-08-11T1830-custom-fields.md` |
+| Windows | `%USERPROFILE%` (`$HOME` in PowerShell) | `C:\Users\you\.claude\handoff\mtg-ai\2026-08-11T1830-custom-fields.md` |
+
+- `<project>` is the repo's directory name (`hobbyhub`, `mtg-ai`, …). If the
+  work is **not tied to a repo** — no project directory applies — ask the user
+  what to name the folder rather than guessing; only fall back to `global` if
+  they have no preference. One folder per project, flat files inside — **not** a
+  folder per handoff.
 - `<slug>` names the **topic only**. The folder already carries the project, so
   repeating it (`hobbyhub-...`) is noise.
 - The timestamp prefix sorts newest-last within each project.
@@ -28,7 +36,9 @@ temp directory. The upstream `mattpocock-skills:handoff` plugin hardcodes temp;
 this skill exists because that default kept reasserting itself. If you ever see
 a handoff land in temp, that is the plugin default winning — move it and say so.
 
-Get the real timestamp (`date +%Y-%m-%dT%H%M`); do not guess it from context.
+Get the real timestamp — do not guess it from context:
+- bash / Git Bash: `date +%Y-%m-%dT%H%M`
+- PowerShell: `Get-Date -Format 'yyyy-MM-ddTHHmm'`
 
 ## What goes in it
 
@@ -67,4 +77,6 @@ Get the real timestamp (`date +%Y-%m-%dT%H%M`); do not guess it from context.
 There is no auto-loading. A fresh session in the project directory picks a
 handoff up only when told to read its path:
 
-> Read `C:\Users\<user>\.claude\handoff\<project>\<file>.md` and continue from there.
+> Read `~/.claude/handoff/<project>/<file>.md` and continue from there.
+
+(Give the tool the path expanded for your OS — see the table above.)
